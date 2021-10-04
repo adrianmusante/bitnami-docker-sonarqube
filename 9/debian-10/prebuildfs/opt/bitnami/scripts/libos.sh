@@ -136,9 +136,9 @@ ensure_user_exists() {
 
     if ! user_exists "$user"; then
         local -a user_args=("-N" "$user")
-        if [ -n "$uid" ]; then
+        if [[ -n "$uid" ]]; then
             if user_exists "$uid" ; then
-                echo "The UID $uid is already in use." >&2
+                error "The UID $uid is already in use." >&2
                 return 1
             fi
             user_args+=("--uid" "$uid")
@@ -156,8 +156,10 @@ ensure_user_exists() {
 
     if [[ -n "$append_groups" ]]; then
         local IFS=','
-        for g in $append_groups ; do ensure_group_exists "$g" ; done
-        usermod -aG "$append_groups" "$user" >/dev/null 2>&1
+        for group in "${groups[@]}"; do
+            ensure_group_exists "$group"
+            usermod -aG "$group" "$user" >/dev/null 2>&1
+        done
     fi
 
     if [[ -n "$home" ]]; then
