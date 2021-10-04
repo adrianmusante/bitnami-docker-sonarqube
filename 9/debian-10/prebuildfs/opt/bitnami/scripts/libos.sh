@@ -70,9 +70,9 @@ ensure_group_exists() {
 
     if ! group_exists "$group"; then
         local -a args=("$group")
-        if [ -n "$gid" ]; then
+        if [[ -n "$gid" ]]; then
             if group_exists "$gid" ; then
-                echo "The GID $gid is already in use." >&2
+                error "The GID $gid is already in use." >&2
                 return 1
             fi
             args+=("--gid" "$gid")
