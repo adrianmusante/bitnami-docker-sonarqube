@@ -155,7 +155,7 @@ ensure_user_exists() {
     fi
 
     if [[ -n "$append_groups" ]]; then
-        local IFS=','
+        read -ra groups <<< "$(tr ',;' ' ' <<< "$append_groups")"
         for group in "${groups[@]}"; do
             ensure_group_exists "$group"
             usermod -aG "$group" "$user" >/dev/null 2>&1
